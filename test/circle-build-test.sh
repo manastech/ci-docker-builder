@@ -1,19 +1,19 @@
 #!/bin/bash
 
 buildNumber() {
-  TRAVIS_BUILD_NUMBER="$1"
+  CIRCLE_BUILD_NUM="$1"
 }
 
 tag() {
-  TRAVIS_TAG="$1"
+  CIRCLE_TAG="$1"
 }
 
 branch() {
-  TRAVIS_BRANCH="$1"
+  CIRCLE_BRANCH="$1"
 }
 
 commit() {
-  TRAVIS_COMMIT="$1"
+  CIRCLE_SHA1="$1"
 }
 
 . ./test-suite.sh

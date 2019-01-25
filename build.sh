@@ -1,23 +1,28 @@
 #!/bin/bash
 
 dockerSetup() {
-  if [[ -n "$TRAVIS_TAG" ]]; then
-    VERSION="$TRAVIS_TAG (build $TRAVIS_BUILD_NUMBER)"
-    DOCKER_TAG="$TRAVIS_TAG"
+  TAG=${TRAVIS_TAG:-$CIRCLE_TAG}
+  BRANCH=${TRAVIS_BRANCH:-$CIRCLE_BRANCH}
+  BUILD_NUMBER=${TRAVIS_BUILD_NUMBER:-$CIRCLE_BUILD_NUM}
+  COMMIT=${TRAVIS_COMMIT:-$CIRCLE_SHA1}
+
+  if [[ -n "$TAG" ]]; then
+    VERSION="$TAG (build $BUILD_NUMBER)"
+    DOCKER_TAG="$TAG"
 
     if [[ "$DOCKER_TAG" =~ ^([0-9]+\.[0-9]+)\.[0-9]+$ ]]; then
       EXTRA_DOCKER_TAG=${BASH_REMATCH[1]}
     fi
-  elif [[ -n "$TRAVIS_BRANCH" ]]; then
-    case $TRAVIS_BRANCH in
+  elif [[ -n "$BRANCH" ]]; then
+    case $BRANCH in
       master)
-        VERSION="dev-${TRAVIS_COMMIT::7} (build $TRAVIS_BUILD_NUMBER)"
+        VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="dev"
         ;;
 
       release/*)
-        VERSION="${TRAVIS_BRANCH##release/}-dev-${TRAVIS_COMMIT::7} (build $TRAVIS_BUILD_NUMBER)"
-        DOCKER_TAG="${TRAVIS_BRANCH##release/}-dev"
+        VERSION="${BRANCH##release/}-dev-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="${BRANCH##release/}-dev"
         ;;
     esac
   fi
