@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Unset Travis environment variables
+unset TRAVIS_BUILD_NUMBER
+unset TRAVIS_TAG
+unset TRAVIS_BRANCH
+unset TRAVIS_COMMIT
+
 buildNumber() {
   CIRCLE_BUILD_NUM="$1"
 }
