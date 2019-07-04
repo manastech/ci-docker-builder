@@ -20,6 +20,16 @@ dockerSetup() {
         DOCKER_TAG="dev"
         ;;
 
+      staging)
+        VERSION="stg-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="stg"
+        ;;
+
+      stable)
+        VERSION="stable-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="stable"
+        ;;
+
       release/*)
         VERSION="${BRANCH##release/}-dev-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="${BRANCH##release/}-dev"
