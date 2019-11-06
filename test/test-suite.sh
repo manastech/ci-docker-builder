@@ -66,6 +66,17 @@ testMasterBranch() {
   assertNull "${DOCKER_CALLS[1]}"
 }
 
+testMasterBranchAsLatest() {
+  branch "master"
+  dockerSetup latest
+
+  assertEquals "0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "latest" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertNull "${DOCKER_CALLS[1]}"
+}
+
 testBuild() {
   DOCKER_TAG="tag"
   dockerBuildAndPush > /dev/null

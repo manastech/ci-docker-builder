@@ -20,6 +20,7 @@ application (for example in the footer).
 |`x.y.z`||`x.y.z (build nnn)`|`x.y.z`|`x.y`|
 ||`release/x.y`|`x.y-dev-rrrrrrr (build nnn)`|`x.y-dev`||
 ||`master`|`dev-rrrrrrr (build nnn)`|`dev`||
+||`master` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
 
 ## Usage
 
@@ -90,10 +91,12 @@ workflows:
 
 ## Functions
 
-### `dockerSetup`
+### `dockerSetup [latest]`
 
 Prepares the environment to build the Docker image. After executing this function, the environment
 variables `VERSION`, `DOCKER_TAG` and `EXTRA_DOCKER_TAG` will be set.
+
+The optinal `latest` flag will set the `DOCKER_TAG` to "latest". This is useful for projects using continuous delivery of the master branch.
 
 Also it will login to the Docker registry using `docker login` and the environment variables
 `DOCKER_USER`, `DOCKER_PASS` and `DOCKER_REGISTRY` (optional).
@@ -121,4 +124,3 @@ dockerBuildAndPush -s "-broker" -d broker
 ```
 
 Both images will have the exact same tags.
-

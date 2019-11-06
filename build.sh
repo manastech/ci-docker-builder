@@ -16,8 +16,17 @@ dockerSetup() {
   elif [[ -n "$BRANCH" ]]; then
     case $BRANCH in
       master)
-        VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
-        DOCKER_TAG="dev"
+        case $1 in
+          latest)
+            VERSION="${COMMIT::7} (build $BUILD_NUMBER)"
+            DOCKER_TAG="latest"
+            ;;
+
+          *)
+            VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
+            DOCKER_TAG="dev"
+            ;;
+        esac
         ;;
 
       release/*)
