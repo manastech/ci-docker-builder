@@ -14,11 +14,25 @@ function __load_circleci_environment() {
   COMMIT=${CIRCLE_SHA1}
 }
 
+function __load_github_actions_environment() {
+  if [[ $GITHUB_REF == refs/heads/* ]]; then
+    BRANCH=${GITHUB_REF#"refs/heads/"}
+    TAG=""
+  elif [[ $GITHUB_REF == refs/tags/* ]]; then
+    TAG=${GITHUB_REF#"refs/tags/"}
+    BRANCH=""
+  fi
+  BUILD_NUMBER=${GITHUB_RUN_NUMBER}
+  COMMIT=${GITHUB_SHA}
+}
+
 dockerSetup() {
   if [ "$TRAVIS" = "true" ]; then
     __load_travisci_environment
   elif [ "$CIRCLECI" = "true" ]; then
     __load_circleci_environment
+  elif [ "$GITHUB_ACTIONS" = "true" ]; then
+    __load_github_actions_environment
   else
     echo "Could not detect CI environment"
     exit 1
