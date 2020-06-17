@@ -2,6 +2,7 @@ language: bash
 
 before_script: cd test
 script:
-  - shellcheck -x travis-build-test.sh -x circle-build-test.sh ../build.sh
+  - shellcheck -x travis-build-test.sh -x circle-build-test.sh -x github-actions-build-test.sh ../build.sh
   - ./travis-build-test.sh
   - ./circle-build-test.sh
+  - ./github-actions-build-test.sh

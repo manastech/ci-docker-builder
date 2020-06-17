@@ -16,4 +16,6 @@ commit() {
   TRAVIS_COMMIT="$1"
 }
 
+TRAVIS="true"
+
 . ./test-suite.sh
