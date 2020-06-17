@@ -1,10 +1,28 @@
 #!/bin/bash
 
+function __load_travisci_environment() {
+  TAG=${TRAVIS_TAG}
+  BRANCH=${TRAVIS_BRANCH}
+  BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+  COMMIT=${TRAVIS_COMMIT}
+}
+
+function __load_circleci_environment() {
+  TAG=${CIRCLE_TAG}
+  BRANCH=${CIRCLE_BRANCH}
+  BUILD_NUMBER=${CIRCLE_BUILD_NUM}
+  COMMIT=${CIRCLE_SHA1}
+}
+
 dockerSetup() {
-  TAG=${TRAVIS_TAG:-$CIRCLE_TAG}
-  BRANCH=${TRAVIS_BRANCH:-$CIRCLE_BRANCH}
-  BUILD_NUMBER=${TRAVIS_BUILD_NUMBER:-$CIRCLE_BUILD_NUM}
-  COMMIT=${TRAVIS_COMMIT:-$CIRCLE_SHA1}
+  if [ "$TRAVIS" = "true" ]; then
+    __load_travisci_environment
+  elif [ "$CIRCLECI" = "true" ]; then
+    __load_circleci_environment
+  else
+    echo "Could not detect CI environment"
+    exit 1
+  fi
 
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"

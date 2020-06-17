@@ -1,10 +1,7 @@
 #!/bin/bash
 
 # Unset Travis environment variables
-unset TRAVIS_BUILD_NUMBER
-unset TRAVIS_TAG
-unset TRAVIS_BRANCH
-unset TRAVIS_COMMIT
+unset TRAVIS
 
 buildNumber() {
   CIRCLE_BUILD_NUM="$1"
@@ -21,5 +18,7 @@ branch() {
 commit() {
   CIRCLE_SHA1="$1"
 }
+
+CIRCLECI="true"
 
 . ./test-suite.sh
