@@ -65,6 +65,11 @@ dockerSetup() {
         VERSION="${BRANCH##release/}-dev-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="${BRANCH##release/}-dev"
         ;;
+
+      preview/*)
+        VERSION="${BRANCH##preview/}-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="${BRANCH##preview/}"
+        ;;
     esac
   fi
 

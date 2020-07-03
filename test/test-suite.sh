@@ -155,5 +155,30 @@ testStack() {
   assertNull "${DOCKER_CALLS[5]}"
 }
 
+testPreviewBranch() {
+  branch "preview/my-feature"
+  dockerSetup > /dev/null
+
+  assertEquals "my-feature-0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "my-feature" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertNull "${DOCKER_CALLS[1]}"
+}
+
+testBuildAndPushPreviewBranch() {
+  branch "preview/my-feature"
+  dockerSetup > /dev/null
+  dockerBuildAndPush > /dev/null
+
+  assertEquals "my-feature-0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "my-feature" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "build -t repository:my-feature ." "${DOCKER_CALLS[1]}"
+  assertEquals "push repository:my-feature" "${DOCKER_CALLS[2]}"
+  assertNull "${DOCKER_CALLS[3]}"
+}
+
 SHUNIT_PARENT="test-suite.sh"
 . ./shunit2
