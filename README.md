@@ -1,7 +1,7 @@
 # ci-docker-builder
 
-This repository hosts a script that can be used to build Docker images during the execution on **Travis** or **CircleCI**
-and push the result to Docker Hub.
+This repository hosts a script that can be used to build Docker images during the execution on **Travis**, **CircleCI**
+or **Github Actions** and push the result to Docker Hub.
 
 The **name** of the image and the **repository** are set through environment variables that must be set on each environment.
 
@@ -88,6 +88,29 @@ workflows:
               only: /.*/
             tags:
               only: /.*/
+```
+
+### Github Actions
+
+Add a workflow like this in a `.github/workflows/build.yml` file to let the script decide when to build or not:
+
+```yaml
+name: Build & Push Docker Image
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # needs: test # you can declare a `test` job and uncomment this to test the app before building
+    env:
+      DOCKER_REPOSITORY: 'dockerhub_org/dockerhub_repo'
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image & push to Docker Hub
+        run: ./build.sh
 ```
 
 ## Functions
