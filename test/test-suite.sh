@@ -180,5 +180,27 @@ testBuildAndPushPreviewBranch() {
   assertNull "${DOCKER_CALLS[3]}"
 }
 
+testDevelopBranch() {
+  branch "develop"
+  dockerSetup > /dev/null
+
+  assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "dev" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertNull "${DOCKER_CALLS[1]}"
+}
+
+testDevelopBranchAsLatest() {
+  branch "develop"
+  dockerSetup latest
+
+  assertEquals "0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "latest" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertNull "${DOCKER_CALLS[1]}"
+}
+
 SHUNIT_PARENT="test-suite.sh"
 . ./shunit2
