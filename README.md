@@ -21,6 +21,8 @@ application (for example in the footer).
 ||`release/x.y`|`x.y-dev-rrrrrrr (build nnn)`|`x.y-dev`||
 ||`master`|`dev-rrrrrrr (build nnn)`|`dev`||
 ||`master` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
+||`develop`|`dev-rrrrrrr (build nnn)`|`dev`||
+||`develop` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
 ||`preview/some-description`|`some-description-rrrrrrr (build nnn)`|`some-description`||
 
 ## Usage

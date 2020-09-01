@@ -47,7 +47,7 @@ dockerSetup() {
     fi
   elif [[ -n "$BRANCH" ]]; then
     case $BRANCH in
-      master)
+      master|develop)
         case $1 in
           latest)
             VERSION="${COMMIT::7} (build $BUILD_NUMBER)"
