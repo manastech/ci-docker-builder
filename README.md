@@ -19,8 +19,8 @@ application (for example in the footer).
 |`x.y`||`x.y (build nnn)`|`x.y`||
 |`x.y.z`||`x.y.z (build nnn)`|`x.y.z`|`x.y`|
 ||`release/x.y`|`x.y-dev-rrrrrrr (build nnn)`|`x.y-dev`||
-||`master`|`dev-rrrrrrr (build nnn)`|`dev`||
-||`master` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
+||`master` or `main`|`dev-rrrrrrr (build nnn)`|`dev`||
+||`master` or `main` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
 ||`preview/some-description`|`some-description-rrrrrrr (build nnn)`|`some-description`||
 
 ## Usage
@@ -120,7 +120,7 @@ jobs:
 Prepares the environment to build the Docker image. After executing this function, the environment
 variables `VERSION`, `DOCKER_TAG` and `EXTRA_DOCKER_TAG` will be set.
 
-The optinal `latest` flag will set the `DOCKER_TAG` to "latest". This is useful for projects using continuous delivery of the master branch.
+The optinal `latest` flag will set the `DOCKER_TAG` to "latest". This is useful for projects using continuous delivery of the main branch.
 
 Also it will login to the Docker registry using `docker login` and the environment variables
 `DOCKER_USER`, `DOCKER_PASS` and `DOCKER_REGISTRY` (optional).
