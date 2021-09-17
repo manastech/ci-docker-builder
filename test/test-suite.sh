@@ -29,7 +29,7 @@ testTagMajorMinor() {
   assertEquals "1.2 (build 123)" "$VERSION"
   assertEquals "1.2" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -40,7 +40,7 @@ testTagMajorMinorPatch() {
   assertEquals "1.2.3 (build 123)" "$VERSION"
   assertEquals "1.2.3" "$DOCKER_TAG"
   assertEquals "1.2" "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -51,7 +51,7 @@ testReleaseBranch() {
   assertEquals "2.3-dev-0b5a2c5 (build 123)" "$VERSION"
   assertEquals "2.3-dev" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -62,7 +62,7 @@ testMasterBranch() {
   assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
   assertEquals "dev" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -73,7 +73,7 @@ testMainBranch() {
   assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
   assertEquals "dev" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -84,7 +84,7 @@ testMasterBranchAsLatest() {
   assertEquals "0b5a2c5 (build 123)" "$VERSION"
   assertEquals "latest" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -96,7 +96,7 @@ testMainBranchAsLatest() {
   assertEquals "0b5a2c5 (build 123)" "$VERSION"
   assertEquals "latest" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -170,7 +170,7 @@ testStack() {
   dockerSetup > /dev/null
   dockerBuildAndPush > /dev/null
 
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertEquals "build -t repository:1.2.3 ." "${DOCKER_CALLS[1]}"
   assertEquals "push repository:1.2.3" "${DOCKER_CALLS[2]}"
   assertEquals "tag repository:1.2.3 repository:1.2" "${DOCKER_CALLS[3]}"
@@ -185,7 +185,7 @@ testPreviewBranch() {
   assertEquals "my-feature-0b5a2c5 (build 123)" "$VERSION"
   assertEquals "my-feature" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertNull "${DOCKER_CALLS[1]}"
 }
 
@@ -197,7 +197,7 @@ testBuildAndPushPreviewBranch() {
   assertEquals "my-feature-0b5a2c5 (build 123)" "$VERSION"
   assertEquals "my-feature" "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
-  assertEquals "login -u user -p pass registry" "${DOCKER_CALLS[0]}"
+  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
   assertEquals "build -t repository:my-feature ." "${DOCKER_CALLS[1]}"
   assertEquals "push repository:my-feature" "${DOCKER_CALLS[2]}"
   assertNull "${DOCKER_CALLS[3]}"

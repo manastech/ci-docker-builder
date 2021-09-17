@@ -75,7 +75,8 @@ dockerSetup() {
 
   echo "Version: ${VERSION}"
 
-  docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}" "${DOCKER_REGISTRY}"
+  # See https://stackoverflow.com/a/4775845/641451 for the `<<< "$VARIABLE"` syntax
+  docker login --username="${DOCKER_USER}" --password-stdin "${DOCKER_REGISTRY}" <<< "${DOCKER_PASS}"
 }
 
 dockerBuildAndPush() {
