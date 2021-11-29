@@ -113,7 +113,7 @@ dockerBuildAndPush() {
   echo "Building image ${IMAGE} from ${DIR}"
   docker build -t "${IMAGE}" "${DIR}"
 
-  echo "Pusing ${IMAGE}"
+  echo "Pushing ${IMAGE}"
   docker push "${IMAGE}"
 
   if [[ -n "$EXTRA_DOCKER_TAG" ]]; then
