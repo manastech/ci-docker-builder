@@ -115,10 +115,13 @@ jobs:
 
 ## Functions
 
-### `dockerSetup [latest]`
+### `dockerSetup [--skip-login] [latest]`
 
 Prepares the environment to build the Docker image. After executing this function, the environment
 variables `VERSION`, `DOCKER_TAG` and `EXTRA_DOCKER_TAG` will be set.
+
+The optional `--skip-login` will avoid running `docker login`, leaving that up to the user. This is
+useful when using a Github Action that logs into Amazon ECR with temporary credentials.
 
 The optinal `latest` flag will set the `DOCKER_TAG` to "latest". This is useful for projects using continuous delivery of the main branch.
 

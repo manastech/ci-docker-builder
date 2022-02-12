@@ -88,7 +88,6 @@ testMasterBranchAsLatest() {
   assertNull "${DOCKER_CALLS[1]}"
 }
 
-
 testMainBranchAsLatest() {
   branch "main"
   dockerSetup latest
@@ -201,6 +200,36 @@ testBuildAndPushPreviewBranch() {
   assertEquals "build -t repository:my-feature ." "${DOCKER_CALLS[1]}"
   assertEquals "push repository:my-feature" "${DOCKER_CALLS[2]}"
   assertNull "${DOCKER_CALLS[3]}"
+}
+
+testSkipLogin() {
+  branch "master"
+  dockerSetup --skip-login > /dev/null
+
+  assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "dev" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertNull "${DOCKER_CALLS[0]}"
+}
+
+testSkipLoginWithLatest() {
+  branch "master"
+  dockerSetup --skip-login latest > /dev/null
+
+  assertEquals "0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "latest" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertNull "${DOCKER_CALLS[0]}"
+}
+
+testSkipLoginAfterLatest() {
+  branch "master"
+  dockerSetup latest --skip-login > /dev/null
+
+  assertEquals "0b5a2c5 (build 123)" "$VERSION"
+  assertEquals "latest" "$DOCKER_TAG"
+  assertNull "$EXTRA_DOCKER_TAG"
+  assertNull "${DOCKER_CALLS[0]}"
 }
 
 SHUNIT_PARENT="test-suite.sh"
