@@ -38,6 +38,17 @@ dockerSetup() {
     exit 1
   fi
 
+  if [ "--skip-login" = "$1" ]
+  then
+    DO_LOGIN=0
+    shift
+  elif [ "--skip-login" = "$2" ]
+  then
+    DO_LOGIN=0
+  else
+    DO_LOGIN=1
+  fi
+
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"
     DOCKER_TAG="$TAG"
@@ -75,8 +86,11 @@ dockerSetup() {
 
   echo "Version: ${VERSION}"
 
-  # See https://stackoverflow.com/a/4775845/641451 for the `<<< "$VARIABLE"` syntax
-  docker login --username="${DOCKER_USER}" --password-stdin "${DOCKER_REGISTRY}" <<< "${DOCKER_PASS}"
+  if [ $DO_LOGIN -eq 1 ]
+  then
+    # See https://stackoverflow.com/a/4775845/641451 for the `<<< "$VARIABLE"` syntax
+    docker login --username="${DOCKER_USER}" --password-stdin "${DOCKER_REGISTRY}" <<< "${DOCKER_PASS}"
+  fi
 }
 
 dockerBuildAndPush() {
