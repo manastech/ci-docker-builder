@@ -16,7 +16,13 @@ inputs:
   repository-suffix:
     type: string
 
+  tag-suffix:
+    type: string
+
   build-directory:
+    type: string
+
+  build-options:
     type: string
 
 runs:
@@ -29,5 +35,7 @@ runs:
         INPUT_LATEST: ${{ inputs.latest }}
         INPUT_REPOSITORY: ${{ inputs.repository }}
         INPUT_REPOSITORY_SUFFIX: ${{ inputs.repository-suffix }}
+        INPUT_TAG_SUFFIX: ${{ inputs.tag-suffix }}
         INPUT_BUILD_DIRECTORY: ${{ inputs.build-directory }}
+        INPUT_BUILD_OPTIONS: ${{ inputs.build-options }}
       shell: bash

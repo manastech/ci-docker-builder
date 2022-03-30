@@ -102,8 +102,9 @@ dockerBuildAndPush() {
   local REPO=$DOCKER_REPOSITORY
   local DIR="."
   local OPTIND
+  local BUILD_OPTS
 
-  while getopts ":r:d:s:" opt "$@"; do
+  while getopts ":r:d:s:t:o:" opt "$@"; do
     case ${opt} in
       r)
         REPO=$OPTARG
@@ -117,21 +118,29 @@ dockerBuildAndPush() {
         DIR=$OPTARG
         ;;
 
+      t)
+        TAG_SUFFIX=$OPTARG
+        ;;
+
+      o)
+        BUILD_OPTS=$OPTARG
+        ;;
+
       *)
         ;;
     esac
   done
 
-  local IMAGE="${REPO}:${DOCKER_TAG}"
+  local IMAGE="${REPO}:${DOCKER_TAG}${TAG_SUFFIX}"
 
   echo "Building image ${IMAGE} from ${DIR}"
-  docker build -t "${IMAGE}" "${DIR}"
+  docker build ${BUILD_OPTS} -t "${IMAGE}" "${DIR}"
 
   echo "Pushing ${IMAGE}"
   docker push "${IMAGE}"
 
   if [[ -n "$EXTRA_DOCKER_TAG" ]]; then
-    local EXTRA_IMAGE="${REPO}:${EXTRA_DOCKER_TAG}"
+    local EXTRA_IMAGE="${REPO}:${EXTRA_DOCKER_TAG}${TAG_SUFFIX}"
     echo "Tagging also as $EXTRA_IMAGE"
     docker tag "${IMAGE}" "${EXTRA_IMAGE}"
 
