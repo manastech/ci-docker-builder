@@ -1,0 +1,33 @@
+# Metadata for the GitHub Action
+name: CI Docker Builder
+author: Manas
+description: Build and publish Docker image(s)
+
+inputs:
+  skip-login:
+    type: boolean
+
+  latest:
+    type: boolean
+
+  repository:
+    type: string
+
+  repository-suffix:
+    type: string
+
+  build-directory:
+    type: string
+
+runs:
+  using: composite
+
+  steps:
+    - run: ./action.sh
+      env:
+        INPUT_SKIP_LOGIN: ${{ inputs.skip-login }}
+        INPUT_LATEST: ${{ inputs.latest }}
+        INPUT_REPOSITORY: ${{ inputs.repository }}
+        INPUT_REPOSITORY_SUFFIX: ${{ inputs.repository-suffix }}
+        INPUT_BUILD_DIRECTORY: ${{ inputs.build-directory }}
+      shell: bash
