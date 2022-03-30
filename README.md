@@ -61,9 +61,12 @@ Add a job within `.circleci/config.yml` and include it in the workflow (preferra
 
 ```yaml
 build:
-  machine: true
+  docker:
+      - image: cimg/base:current
   steps:
     - checkout
+    - setup_remote_docker:
+          docker_layer_caching: true
     - run: ./.circleci/build.sh
 ```
 
