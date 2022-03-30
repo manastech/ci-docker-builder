@@ -136,7 +136,9 @@ jobs:
         #   skip-login: <true|false>
         #   repository: ""
         #   repository-suffix: ""
+        #   tag-suffix: ""
         #   build-directory: ""
+        #   build-options: ""
 ```
 
 ## Functions
@@ -174,7 +176,9 @@ It can receive these optional arguments:
 
   * `-r <repo>`: Override the repository where the image is pushed
   * `-s <suffix>`: Override the repository by adding a suffix to the one specified by the environment variable
+  * `-t <suffix>`: Append a suffix to the image tags (e.g. `-next`)
   * `-d <dir>`: Build from the specified directory
+  * `-o "<options>"`: Options to directly pass to the docker build command
 
 This function can be called several times to build different images within the same build. For example:
 

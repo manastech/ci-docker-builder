@@ -67,7 +67,7 @@ dockerSetup() {
         VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="dev"
         ;;
-      
+
       "$STABLE_BRANCH")
         VERSION="rc-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="rc"
@@ -116,8 +116,9 @@ dockerBuildAndPush() {
   local REPO=$DOCKER_REPOSITORY
   local DIR="."
   local OPTIND
+  local BUILD_OPTS
 
-  while getopts ":r:d:s:" opt "$@"; do
+  while getopts ":r:d:s:t:o:" opt "$@"; do
     case ${opt} in
       r)
         REPO=$OPTARG
@@ -131,21 +132,29 @@ dockerBuildAndPush() {
         DIR=$OPTARG
         ;;
 
+      t)
+        TAG_SUFFIX=$OPTARG
+        ;;
+
+      o)
+        BUILD_OPTS=$OPTARG
+        ;;
+
       *)
         ;;
     esac
   done
 
-  local IMAGE="${REPO}:${DOCKER_TAG}"
+  local IMAGE="${REPO}:${DOCKER_TAG}${TAG_SUFFIX}"
 
   echo "Building image ${IMAGE} from ${DIR}"
-  docker build -t "${IMAGE}" "${DIR}"
+  docker build ${BUILD_OPTS} -t "${IMAGE}" "${DIR}"
 
   echo "Pushing ${IMAGE}"
   docker push "${IMAGE}"
 
   if [[ -n "$EXTRA_DOCKER_TAG" ]]; then
-    __dockerTagAndPush "$EXTRA_DOCKER_TAG"
+    __dockerTagAndPush "${EXTRA_DOCKER_TAG}${TAG_SUFFIX}"
   fi
 
   if [[ -n "$DOCKER_TAG_AS_LATEST" ]]; then
