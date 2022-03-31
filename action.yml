@@ -26,16 +26,5 @@ inputs:
     type: string
 
 runs:
-  using: composite
-
-  steps:
-    - run: ./action.sh
-      env:
-        INPUT_SKIP_LOGIN: ${{ inputs.skip-login }}
-        INPUT_LATEST: ${{ inputs.latest }}
-        INPUT_REPOSITORY: ${{ inputs.repository }}
-        INPUT_REPOSITORY_SUFFIX: ${{ inputs.repository-suffix }}
-        INPUT_TAG_SUFFIX: ${{ inputs.tag-suffix }}
-        INPUT_BUILD_DIRECTORY: ${{ inputs.build-directory }}
-        INPUT_BUILD_OPTIONS: ${{ inputs.build-options }}
-      shell: bash
+  using: node16
+  main: action.js
