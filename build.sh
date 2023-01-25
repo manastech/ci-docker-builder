@@ -67,6 +67,11 @@ dockerSetup() {
         VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="dev"
         ;;
+      
+      "$STABLE_BRANCH")
+        VERSION="rc-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="rc"
+        ;;
 
       release/*)
         VERSION="${BRANCH##release/}-dev-${COMMIT::7} (build $BUILD_NUMBER)"
