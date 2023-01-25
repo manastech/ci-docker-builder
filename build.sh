@@ -38,11 +38,13 @@ dockerSetup() {
     exit 1
   fi
 
-  if [ "--skip-login" = "$1" ]
+  if [[ $* == *latest* ]]
   then
-    DO_LOGIN=0
-    shift
-  elif [ "--skip-login" = "$2" ]
+    echo "ERROR: 'latest' flag was removed - check the up-to-date docs"
+    exit 2
+  fi
+
+  if [[ $* == *--skip-login* ]]
   then
     DO_LOGIN=0
   else
