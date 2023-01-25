@@ -1,0 +1,19 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Shellcheck
+        run: shellcheck -x ./test/travis-build-test.sh -x ./test/circle-build-test.sh -x ./test/github-actions-build-test.sh ./build.sh
+      
+      - name: Run tests
+        working-directory: ./test/
+        run: |
+          ./travis-build-test.sh
+          ./circle-build-test.sh
+          ./github-actions-build-test.sh
