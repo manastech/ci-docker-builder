@@ -270,7 +270,7 @@ testBuildAndPushPreviewBranch() {
 }
 
 testSkipLogin() {
-  branch "master"
+  branch "main"
   dockerSetup --skip-login > /dev/null
 
   assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
