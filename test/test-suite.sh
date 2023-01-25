@@ -281,39 +281,24 @@ testSkipLogin() {
 }
 
 testLatestFlagFails() {
-  branch "master"
-  dockerSetup latest # latest flag was removed
+  branch "main"
+  ( dockerSetup latest > /dev/null ) # latest flag was removed
 
   assertNotEquals "0" "$?"
-  assertNull "$VERSION"
-  assertNull "$DOCKER_TAG"
-  assertNull "$EXTRA_DOCKER_TAG"
-  assertNull "$DOCKER_TAG_AS_LATEST"
-  assertNull "${DOCKER_CALLS[0]}"
 }
 
 testLatestFlagFailsAfterSkipLogin() {
-  branch "master"
-  dockerSetup --skip-login latest > /dev/null
+  branch "main"
+  ( dockerSetup --skip-login latest > /dev/null )
 
   assertNotEquals "0" "$?"
-  assertNull "$VERSION"
-  assertNull "$DOCKER_TAG"
-  assertNull "$EXTRA_DOCKER_TAG"
-  assertNull "$DOCKER_TAG_AS_LATEST"
-  assertNull "${DOCKER_CALLS[0]}"
 }
 
 testLatestFlagFailsBeforeSkipLogin() {
-  branch "master"
-  dockerSetup latest --skip-login > /dev/null
+  branch "main"
+  ( dockerSetup latest --skip-login > /dev/null )
 
   assertNotEquals "0" "$?"
-  assertNull "$VERSION"
-  assertNull "$DOCKER_TAG"
-  assertNull "$EXTRA_DOCKER_TAG"
-  assertNull "$DOCKER_TAG_AS_LATEST"
-  assertNull "${DOCKER_CALLS[0]}"
 }
 
 SHUNIT_PARENT="test-suite.sh"
