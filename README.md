@@ -14,14 +14,15 @@ The **tag** of the Docker image is calculated depending on the branch and/or tag
 to these rules. Also a `VERSION` environment variable is generated that can (and should) be used to display within the
 application (for example in the footer).
 
-| Tag | Branch | `VERSION` | `DOCKER_TAG` | `EXTRA_DOCKER_TAG` |
-|--|--|--|--|--|
-|`x.y`||`x.y (build nnn)`|`x.y`||
-|`x.y.z`||`x.y.z (build nnn)`|`x.y.z`|`x.y`|
-||`release/x.y`|`x.y-dev-rrrrrrr (build nnn)`|`x.y-dev`||
-||`master` or `main`|`dev-rrrrrrr (build nnn)`|`dev`||
-||`master` or `main` (called with **latest** flag)|`rrrrrrr (build nnn)`|`latest`||
-||`preview/some-description`|`some-description-rrrrrrr (build nnn)`|`some-description`||
+| Tag     | Branch                                         | `VERSION`                              | Docker tags              |
+|---------|------------------------------------------------|----------------------------------------|--------------------------|
+| `x.y`   |                                                | `x.y (build nnn)`                      | `x.y`, `latest`          |
+| `x.y.z` |                                                | `x.y.z (build nnn)`                    | `x.y.z`, `x.y`, `latest` |
+|         | `release/x.y`                                  | `x.y-dev-rrrrrrr (build nnn)`          | `x.y-dev`                |
+|         | `main`                                         | `dev-rrrrrrr (build nnn)`              | `dev`                    |
+|         | `some-branch` (with DEV_BRANCH=some-branch)    | `dev-rrrrrrr (build nnn)`              | `dev`                    |
+|         | `some-branch` (with STABLE_BRANCH=some-branch) | `rc-rrrrrrr (build nnn)`               | `rc`                     |
+|         | `preview/some-description`                     | `some-description-rrrrrrr (build nnn)` | `some-description`       |
 
 ## Usage
 
@@ -33,7 +34,7 @@ set -eo pipefail
 
 # This will load the script from this repository. Make sure to point to a specific commit so the build continues to work
 # event if breaking changes are introduced in this repository
-source <(curl -s https://raw.githubusercontent.com/manastech/ci-docker-builder/14726d1aa865b754686818b51a9cbefe75da7943/build.sh)
+source <(curl -s https://raw.githubusercontent.com/manastech/ci-docker-builder/ef8bdcdf2eae3944de7235b847cb449789aecab7/build.sh)
 
 # Prepare the build
 dockerSetup
@@ -118,18 +119,28 @@ jobs:
 
 ## Functions
 
-### `dockerSetup [--skip-login] [latest]`
+### `dockerSetup [--skip-login]`
 
 Prepares the environment to build the Docker image. After executing this function, the environment
 variables `VERSION`, `DOCKER_TAG` and `EXTRA_DOCKER_TAG` will be set.
 
-The optional `--skip-login` will avoid running `docker login`, leaving that up to the user. This is
-useful when using a Github Action that logs into Amazon ECR with temporary credentials.
+It will also login to the Docker registry using `docker login` and the environment variables
+`DOCKER_USER`, `DOCKER_PASS` and `DOCKER_REGISTRY` (optional). This behaviour can be avoided
+by setting the optional `--skip-login` flag, useful when using a Github Action that logs into
+Amazon ECR with temporary credentials.
 
-The optinal `latest` flag will set the `DOCKER_TAG` to "latest". This is useful for projects using continuous delivery of the main branch.
+The function supports two extra environment variables (`DEV_BRANCH` and `STABLE_BRANCH`) to tweak which
+branches to consider as development & stable, respectively. `DEV_BRANCH` defaults to `main`, and there's no
+default `STABLE_BRANCH`:
 
-Also it will login to the Docker registry using `docker login` and the environment variables
-`DOCKER_USER`, `DOCKER_PASS` and `DOCKER_REGISTRY` (optional).
+```
+DEV_BRANCH=develop dockerSetup
+STABLE_BRANCH=stable dockerSetup
+DEV_BRANCH=master STABLE_BRANCH=stable dockerSetup
+```
+
+> **DEPRECATION NOTE:** older versions of the script supported a `latest` flag to generate the `:latest` Docker image tags.
+> This flag has been since removed, and the script will fail to notify users if present.
 
 ### `dockerBuildAndPush`
 
