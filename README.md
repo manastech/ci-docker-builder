@@ -34,7 +34,7 @@ set -eo pipefail
 
 # This will load the script from this repository. Make sure to point to a specific commit so the build continues to work
 # event if breaking changes are introduced in this repository
-source <(curl -s https://raw.githubusercontent.com/manastech/ci-docker-builder/ef8bdcdf2eae3944de7235b847cb449789aecab7/build.sh)
+source /dev/stdin <<< "$(curl -s https://raw.githubusercontent.com/manastech/ci-docker-builder/ef8bdcdf2eae3944de7235b847cb449789aecab7/build.sh)"
 
 # Prepare the build
 dockerSetup
