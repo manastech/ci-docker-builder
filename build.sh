@@ -54,6 +54,7 @@ dockerSetup() {
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"
     DOCKER_TAG="$TAG"
+    DOCKER_TAG_AS_LATEST="true"
 
     if [[ "$DOCKER_TAG" =~ ^([0-9]+\.[0-9]+)\.[0-9]+$ ]]; then
       EXTRA_DOCKER_TAG=${BASH_REMATCH[1]}
@@ -95,6 +96,16 @@ dockerSetup() {
   fi
 }
 
+__dockerTagAndPush() {
+  local EXTRA_TAG="${1}"
+  local EXTRA_IMAGE="${REPO}:${EXTRA_TAG}"
+  echo "Tagging also as $EXTRA_IMAGE"
+  docker tag "${IMAGE}" "${EXTRA_IMAGE}"
+
+  echo "Pushing ${EXTRA_IMAGE}"
+  docker push "${EXTRA_IMAGE}"
+}
+
 dockerBuildAndPush() {
   if [[ -z "$DOCKER_TAG" ]]; then
     echo "Not building because DOCKER_TAG is undefined"
@@ -133,11 +144,10 @@ dockerBuildAndPush() {
   docker push "${IMAGE}"
 
   if [[ -n "$EXTRA_DOCKER_TAG" ]]; then
-    local EXTRA_IMAGE="${REPO}:${EXTRA_DOCKER_TAG}"
-    echo "Tagging also as $EXTRA_IMAGE"
-    docker tag "${IMAGE}" "${EXTRA_IMAGE}"
+    __dockerTagAndPush "$EXTRA_DOCKER_TAG"
+  fi
 
-    echo "Pushing ${EXTRA_IMAGE}"
-    docker push "${EXTRA_IMAGE}"
+  if [[ -n "$DOCKER_TAG_AS_LATEST" ]]; then
+    __dockerTagAndPush "latest"
   fi
 }
