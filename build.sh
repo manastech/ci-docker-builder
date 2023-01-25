@@ -38,38 +38,39 @@ dockerSetup() {
     exit 1
   fi
 
-  if [ "--skip-login" = "$1" ]
+  if [[ $* == *latest* ]]
   then
-    DO_LOGIN=0
-    shift
-  elif [ "--skip-login" = "$2" ]
+    echo "ERROR: 'latest' flag was removed - check the up-to-date docs"
+    exit 2
+  fi
+
+  if [[ $* == *--skip-login* ]]
   then
     DO_LOGIN=0
   else
     DO_LOGIN=1
   fi
 
+  local DEVELOPMENT_BRANCH="${DEV_BRANCH:-main}"
+
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"
     DOCKER_TAG="$TAG"
+    DOCKER_TAG_AS_LATEST="true"
 
     if [[ "$DOCKER_TAG" =~ ^([0-9]+\.[0-9]+)\.[0-9]+$ ]]; then
       EXTRA_DOCKER_TAG=${BASH_REMATCH[1]}
     fi
   elif [[ -n "$BRANCH" ]]; then
     case $BRANCH in
-      master|main)
-        case $1 in
-          latest)
-            VERSION="${COMMIT::7} (build $BUILD_NUMBER)"
-            DOCKER_TAG="latest"
-            ;;
-
-          *)
-            VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
-            DOCKER_TAG="dev"
-            ;;
-        esac
+      "$DEVELOPMENT_BRANCH")
+        VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="dev"
+        ;;
+      
+      "$STABLE_BRANCH")
+        VERSION="rc-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="rc"
         ;;
 
       release/*)
@@ -81,6 +82,9 @@ dockerSetup() {
         VERSION="${BRANCH##preview/}-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="${BRANCH##preview/}"
         ;;
+
+      *) # if we couldn't set a DOCKER_TAG, stop setup
+        return
     esac
   fi
 
@@ -91,6 +95,16 @@ dockerSetup() {
     # See https://stackoverflow.com/a/4775845/641451 for the `<<< "$VARIABLE"` syntax
     docker login --username="${DOCKER_USER}" --password-stdin "${DOCKER_REGISTRY}" <<< "${DOCKER_PASS}"
   fi
+}
+
+__dockerTagAndPush() {
+  local EXTRA_TAG="${1}"
+  local EXTRA_IMAGE="${REPO}:${EXTRA_TAG}"
+  echo "Tagging also as $EXTRA_IMAGE"
+  docker tag "${IMAGE}" "${EXTRA_IMAGE}"
+
+  echo "Pushing ${EXTRA_IMAGE}"
+  docker push "${EXTRA_IMAGE}"
 }
 
 dockerBuildAndPush() {
@@ -131,11 +145,10 @@ dockerBuildAndPush() {
   docker push "${IMAGE}"
 
   if [[ -n "$EXTRA_DOCKER_TAG" ]]; then
-    local EXTRA_IMAGE="${REPO}:${EXTRA_DOCKER_TAG}"
-    echo "Tagging also as $EXTRA_IMAGE"
-    docker tag "${IMAGE}" "${EXTRA_IMAGE}"
+    __dockerTagAndPush "$EXTRA_DOCKER_TAG"
+  fi
 
-    echo "Pushing ${EXTRA_IMAGE}"
-    docker push "${EXTRA_IMAGE}"
+  if [[ -n "$DOCKER_TAG_AS_LATEST" ]]; then
+    __dockerTagAndPush "latest"
   fi
 }
