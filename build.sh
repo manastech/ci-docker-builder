@@ -51,7 +51,7 @@ dockerSetup() {
     DO_LOGIN=1
   fi
 
-  local DEVELOPMENT_BRANCH="main"
+  local DEVELOPMENT_BRANCH="${DEV_BRANCH:-main}"
 
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"
