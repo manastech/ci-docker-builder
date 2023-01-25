@@ -59,16 +59,16 @@ testReleaseBranch() {
   assertNull "${DOCKER_CALLS[1]}"
 }
 
-testMasterAsDefaultDevelopmentBranch() {
+testMasterBranchIsNotADefault() {
   branch "master"
   dockerSetup > /dev/null
 
-  assertEquals "dev-0b5a2c5 (build 123)" "$VERSION"
-  assertEquals "dev" "$DOCKER_TAG"
+  assertEquals "0" "$?"
+  assertNull "$VERSION"
+  assertNull "$DOCKER_TAG"
   assertNull "$EXTRA_DOCKER_TAG"
   assertNull "$DOCKER_TAG_AS_LATEST"
-  assertEquals "login --username=user --password-stdin registry" "${DOCKER_CALLS[0]}"
-  assertNull "${DOCKER_CALLS[1]}"
+  assertNull "${DOCKER_CALLS[0]}"
 }
 
 testMainAsDefaultDevelopmentBranch() {

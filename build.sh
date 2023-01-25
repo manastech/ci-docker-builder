@@ -51,6 +51,8 @@ dockerSetup() {
     DO_LOGIN=1
   fi
 
+  local DEVELOPMENT_BRANCH="main"
+
   if [[ -n "$TAG" ]]; then
     VERSION="$TAG (build $BUILD_NUMBER)"
     DOCKER_TAG="$TAG"
@@ -61,18 +63,9 @@ dockerSetup() {
     fi
   elif [[ -n "$BRANCH" ]]; then
     case $BRANCH in
-      master|main)
-        case $1 in
-          latest)
-            VERSION="${COMMIT::7} (build $BUILD_NUMBER)"
-            DOCKER_TAG="latest"
-            ;;
-
-          *)
-            VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
-            DOCKER_TAG="dev"
-            ;;
-        esac
+      "$DEVELOPMENT_BRANCH")
+        VERSION="dev-${COMMIT::7} (build $BUILD_NUMBER)"
+        DOCKER_TAG="dev"
         ;;
 
       release/*)
@@ -84,6 +77,9 @@ dockerSetup() {
         VERSION="${BRANCH##preview/}-${COMMIT::7} (build $BUILD_NUMBER)"
         DOCKER_TAG="${BRANCH##preview/}"
         ;;
+
+      *) # if we couldn't set a DOCKER_TAG, stop setup
+        return
     esac
   fi
 
