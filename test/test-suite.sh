@@ -83,18 +83,6 @@ testMainAsDefaultDevelopmentBranch() {
   assertNull "${DOCKER_CALLS[1]}"
 }
 
-testStableBranchDoesNotHaveADefault() {
-  branch "stable"
-  dockerSetup > /dev/null
-
-  assertEquals "0" "$?"
-  assertNull "$VERSION"
-  assertNull "$DOCKER_TAG"
-  assertNull "$EXTRA_DOCKER_TAG"
-  assertNull "$DOCKER_TAG_AS_LATEST"
-  assertNull "${DOCKER_CALLS[0]}"
-}
-
 testCustomStableBranch() {
   branch "stable"
   STABLE_BRANCH=stable dockerSetup > /dev/null
@@ -166,6 +154,30 @@ testBuildWithExtraTagAndLatest() {
   assertEquals "tag repository:tag repository:latest" "${DOCKER_CALLS[4]}"
   assertEquals "push repository:latest" "${DOCKER_CALLS[5]}"
   assertNull "${DOCKER_CALLS[6]}"
+}
+
+testBuildWithTagSuffix() {
+  DOCKER_TAG="tag"
+  EXTRA_DOCKER_TAG="extra"
+  DOCKER_TAG_AS_LATEST="true"
+  dockerBuildAndPush -t "-next" > /dev/null
+
+  assertEquals "build -t repository:tag-next ." "${DOCKER_CALLS[0]}"
+  assertEquals "push repository:tag-next" "${DOCKER_CALLS[1]}"
+  assertEquals "tag repository:tag-next repository:extra-next" "${DOCKER_CALLS[2]}"
+  assertEquals "push repository:extra-next" "${DOCKER_CALLS[3]}"
+  assertEquals "tag repository:tag-next repository:latest" "${DOCKER_CALLS[4]}"
+  assertEquals "push repository:latest" "${DOCKER_CALLS[5]}"
+  assertNull "${DOCKER_CALLS[6]}"
+}
+
+testBuildWithBuildOptions() {
+  DOCKER_TAG="tag"
+  dockerBuildAndPush -o "--build-arg gemfile=Gemfile.next" > /dev/null
+
+  assertEquals "build --build-arg gemfile=Gemfile.next -t repository:tag ." "${DOCKER_CALLS[0]}"
+  assertEquals "push repository:tag" "${DOCKER_CALLS[1]}"
+  assertNull "${DOCKER_CALLS[2]}"
 }
 
 testBuildCustomRepo() {

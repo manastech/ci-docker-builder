@@ -116,6 +116,7 @@ dockerBuildAndPush() {
   local REPO=$DOCKER_REPOSITORY
   local DIR="."
   local OPTIND
+  local TAG_SUFFIX
   local BUILD_OPTS
 
   while getopts ":r:d:s:t:o:" opt "$@"; do
