@@ -148,7 +148,7 @@ dockerBuildAndPush() {
   local IMAGE="${REPO}:${DOCKER_TAG}${TAG_SUFFIX}"
 
   echo "Building image ${IMAGE} from ${DIR}"
-  # shellcheck disable=SC2086 (BUILD_OPTS must be splat)
+  # shellcheck disable=SC2086
   docker build ${BUILD_OPTS} -t "${IMAGE}" "${DIR}"
 
   echo "Pushing ${IMAGE}"
