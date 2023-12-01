@@ -10,7 +10,6 @@ function getInput(name) {
 // collect action inputs:
 let setupOpts = []
 if (getInput("skip-login") === "true") setupOpts.push("--skip-login")
-if (getInput("latest") === "true")     setupOpts.push("latest")
 
 let buildOpts = [], value
 if ((value = getInput("repository")) !== "")        buildOpts.push(`-r ${value}`)

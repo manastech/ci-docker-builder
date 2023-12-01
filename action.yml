@@ -7,9 +7,6 @@ inputs:
   skip-login:
     type: boolean
 
-  latest:
-    type: boolean
-
   repository:
     type: string
 
