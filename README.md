@@ -112,9 +112,33 @@ jobs:
       DOCKER_USER: ${{ secrets.DOCKER_USER }}
       DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build image & push to Docker Hub
         run: ./build.sh
+```
+
+Alternatively you may skip the local `build.sh` script and use this repository
+as a step action directly.
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # needs: test # you can declare a `test` job and uncomment this to test the app before building
+    env:
+      DOCKER_REPOSITORY: 'dockerhub_org/dockerhub_repo'
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: manastech/ci-docker-builder@<sha1>
+        # with:
+        #   skip-login: <true|false>
+        #   repository: ""
+        #   repository-suffix: ""
+        #   tag-suffix: ""
+        #   build-directory: ""
+        #   build-options: ""
 ```
 
 ## Functions
@@ -152,7 +176,9 @@ It can receive these optional arguments:
 
   * `-r <repo>`: Override the repository where the image is pushed
   * `-s <suffix>`: Override the repository by adding a suffix to the one specified by the environment variable
+  * `-t <suffix>`: Append a suffix to the image tags (e.g. `-next`)
   * `-d <dir>`: Build from the specified directory
+  * `-o "<options>"`: Options to directly pass to the docker build command
 
 This function can be called several times to build different images within the same build. For example:
 

@@ -1,0 +1,27 @@
+# Metadata for the GitHub Action
+name: CI Docker Builder
+author: Manas
+description: Build and publish Docker image(s)
+
+inputs:
+  skip-login:
+    type: boolean
+
+  repository:
+    type: string
+
+  repository-suffix:
+    type: string
+
+  tag-suffix:
+    type: string
+
+  build-directory:
+    type: string
+
+  build-options:
+    type: string
+
+runs:
+  using: node16
+  main: action.js
