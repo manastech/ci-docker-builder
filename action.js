@@ -20,6 +20,7 @@ if ((value = getInput("build-options")) !== "")     buildOpts.push(`-o "${value}
 
 // generate a local build.sh script:
 fs.writeFileSync("build.sh", `#! bash
+set -eo pipefail
 source ${__dirname}/build.sh
 dockerSetup ${setupOpts.join(" ")}
 echo $VERSION > VERSION
